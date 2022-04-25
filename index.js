@@ -54,12 +54,35 @@ async function run() {
       res.send(data);
     });
 
+    // delete apt
+    // link: http://localhost:4000/ticket/62662de488c7b855fb096947
     app.delete('/ticket/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
-      console.log(id);
+      // console.log(id);
 
       const result = await ticketCollection.deleteOne(filter);
+      res.send(result);
+    });
+    // put api
+    // link: http://localhost:4000/ticket/626634776ee53aba74794f21
+    app.put('/ticket/:id', async (req, res) => {
+      const id = req.params.id;
+      console.log(id);
+      const data = req.body;
+      const filter = { _id: ObjectId(id) };
+
+      const newData = {
+        $set: data,
+      };
+
+      console.log(data);
+
+      const options = { upsert: true };
+      const result = await ticketCollection.updateOne(filter, newData, options);
+      console.log(
+        `${result.matchedCount} document(s) matched the filter, updated ${result.modifiedCount} document(s)`
+      );
       res.send(result);
     });
 
